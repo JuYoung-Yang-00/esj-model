@@ -1,19 +1,21 @@
 import json
-from numpy import tiktoken 
+import tiktoken 
 import numpy as np
 from collections import defaultdict
 
-data_path = "./data_prepared.jsonl"
+# DATA LOADING
+data_path = "./newdata.jsonl"
 with open(data_path, 'r', encoding='utf-8') as f:
     dataset = [json.loads(line) for line in f]
 
-# Initial dataset stats
+# # Initial dataset stats
 print("Num examples:", len(dataset))
 print("First example:")
 for message in dataset[0]["messages"]:
     print(message)
 
-# Format error checks
+
+# FORMAT VALIDATION
 format_errors = defaultdict(int)
 
 for ex in dataset:
@@ -54,6 +56,8 @@ else:
     
 encoding = tiktoken.get_encoding("cl100k_base")
 
+
+# TOKEN COUNTING UTILITIES
 # not exact!
 # simplified from https://github.com/openai/openai-cookbook/blob/main/examples/How_to_count_tokens_with_tiktoken.ipynb
 def num_tokens_from_messages(messages, tokens_per_message=3, tokens_per_name=1):
@@ -79,7 +83,7 @@ def print_distribution(values, name):
     print(f"min / max: {min(values)}, {max(values)}")
     print(f"mean / median: {np.mean(values)}, {np.median(values)}")
     print(f"p5 / p95: {np.quantile(values, 0.1)}, {np.quantile(values, 0.9)}")
-    
+     
 # Warnings and tokens counts
 n_missing_system = 0
 n_missing_user = 0
@@ -106,6 +110,7 @@ n_too_long = sum(l > 4096 for l in convo_lens)
 print(f"\n{n_too_long} examples may be over the 4096 token limit, they will be truncated during fine-tuning")
 
 
+# COST ESTIMATION
 # Pricing and default n_epochs estimate
 MAX_TOKENS_PER_EXAMPLE = 4096
 

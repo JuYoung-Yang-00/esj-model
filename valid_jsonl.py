@@ -10,7 +10,7 @@ def validate_jsonl(file_path):
                 return False
     return True
 
-is_valid = validate_jsonl('./data.jsonl')
+is_valid = validate_jsonl('./val_data.jsonl')
 if is_valid:
     print("The JSONL file is valid.")
 else:
